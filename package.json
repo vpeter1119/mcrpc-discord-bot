@@ -1,0 +1,28 @@
+{
+  "name": "mcrpc-discord-bot",
+  "version": "0.1.0",
+  "description": "A Discord bot with various useful functions for MC Roleplaying Club.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^12.1.1",
+    "dotenv": "^8.2.0",
+    "fantasy-content-generator": "^4.6.7",
+    "lodash": "^4.17.15",
+    "fantasy-name": "^1.0.5",
+    "fantasy-names": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vpeter1119/mcrpc-discord-bot.git"
+  },
+  "author": "Peter Vertesi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vpeter1119/mcrpc-discord-bot/issues"
+  },
+  "homepage": "https://github.com/vpeter1119/mcrpc-discord-bot#readme"
+}
