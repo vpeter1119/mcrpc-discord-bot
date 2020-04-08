@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "A Discord bot with various useful functions for MC Roleplaying Club.",
   "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "discord.js": "^12.1.1",
     "dotenv": "^8.2.0",
