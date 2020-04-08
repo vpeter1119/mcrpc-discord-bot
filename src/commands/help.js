@@ -13,13 +13,23 @@ var commands = [
     syntax: "`%fr wiki <article_title>`",
     desc:
       " - megpróbál készíteni egy linket a megfelelő cikkre a Forgotten Realms Wiki oldalon."
-  }
+  },
+  {
+    syntax: "`%fcg name`",
+    desc:
+      " - a Fantasy Content Generator segítségével generál egy random nevet, fajjal és nemmel."
+  },
+  {
+    syntax: "`%fcg npc`",
+    desc:
+      " - a Fantasy Content Generator segítségével generál egy random NPC-t, fajjal és nemmel, valamint néhány személyiségjeggyel."
+  },
 ];
 
 exports.Help = function(chn) {
   var msgData = "A jelenleg elérhető parancsok:\n\n";
   commands.forEach(cmd => {
-    msgData = msgData + cmd.syntax + cmd.desc + "\n";
+  msgData = msgData + cmd.syntax + cmd.desc + "\n\n";
   });
   chn.send(msgData);
 };

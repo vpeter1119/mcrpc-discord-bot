@@ -7,7 +7,7 @@ const token = process.env.TOKEN;
 
 const _fr = require("./commands/forgotten-realms.js");
 const _help = require("./commands/help.js");
-const _rn = require("./commands/random-name.js");
+const _fcg = require("./commands/fantasy-content-generator.js");
 const _wa = require("./commands/worldanvil.js");
 
 client.on("ready", () => {
@@ -30,7 +30,6 @@ client.on("message", msg => {
     var input = msg.content.slice(1).split(" ", 3);
 	var cmdRoot = input[0];
 	var cmdSpec = input[1];
-	console.log("Debug: "+input[0]+" "+input[1]);
 	var cmdCont = msg.content.split("%" + input[0]+" "+input[1] + " ")[1];
 	console.log("Command: " + cmdRoot + "_" + cmdSpec + "_" + cmdCont);
     switch (cmdRoot) {
@@ -46,8 +45,9 @@ client.on("message", msg => {
         msg.react("👍");
         _fr.WikiLink(chn, cmdCont);
         break;
-      case "rndname":
-        _rn.GenerateRandomNames(chn, cmdCont);
+      case "fcg":
+		msg.react("👍");
+        _fcg.Main(cmdSpec, chn, cmdCont);
         break;
       default:
         _help.UnknownCommand(chn);
