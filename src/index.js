@@ -14,9 +14,9 @@ client.on("ready", () => {
   client.user.setStatus("available");
   client.user.setPresence({
     status: "online",
-    activity: {
-      name: "to %help",
-      type: "LISTENING:"
+    game: {
+      name: "Role | %help for info",
+      type: "PLAYING:"
     }
   });
   console.log("Logged in as " + client.user.tag + "!");
@@ -24,25 +24,30 @@ client.on("ready", () => {
 
 client.on("message", msg => {
   var chn = msg.channel;
-  var first = msg.content.slice(0, 1);
-  if (first === "%") {
-    var cmd = msg.content.slice(1, 9);
-    console.log("Command: " + cmd);
-    switch (cmd) {
+  var operator = msg.content.slice(0, 1);
+  if (operator === "%") {
+    //var cmd = msg.content.slice(1, 9);
+    var input = msg.content.slice(1).split(" ", 3);
+	var cmdRoot = input[0];
+	var cmdSpec = input[1];
+	console.log("Debug: "+input[0]+" "+input[1]);
+	var cmdCont = msg.content.split("%" + input[0]+" "+input[1] + " ")[1];
+	console.log("Command: " + cmdRoot + "_" + cmdSpec + "_" + cmdCont);
+    switch (cmdRoot) {
       case "help":
         msg.react("👍");
         _help.Help(chn);
         break;
-      case "wa link ":
+      case "wa":
         msg.react("👍");
-        _wa.Link(chn, msg.content.slice(9));
+        _wa.Main(cmdSpec, chn, cmdCont);
         break;
-      case "fr wiki ":
+      case "fr":
         msg.react("👍");
-        _fr.WikiLink(chn, msg.content.slice(9));
+        _fr.WikiLink(chn, cmdCont);
         break;
-      case "rndname ":
-        _rn.GenerateRandomNames(chn, msg.content.slice(9));
+      case "rndname":
+        _rn.GenerateRandomNames(chn, cmdCont);
         break;
       default:
         _help.UnknownCommand(chn);

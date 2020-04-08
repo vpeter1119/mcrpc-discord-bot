@@ -1,7 +1,19 @@
 const _ = require("lodash");
 var world = "C39CvegfC3B6ld-ottaviani";
 
-exports.Link = function(chn, inputTitle) {
+const _help = require("./help.js");
+
+exports.Main = function(cmd, chn, cont) {
+	switch (cmd) {
+		case "link":
+			Link(chn, cont);
+			break;
+		default:
+			_help.UnknownCommand(chn);
+	}
+}
+
+function Link(chn, inputTitle) {
   var titleAsRequested = inputTitle;
   console.log(titleAsRequested);
   var title = titleAsRequested.replace(/'/g, "");
@@ -9,6 +21,9 @@ exports.Link = function(chn, inputTitle) {
   title = title.replace(/"/g, "-");
   console.log(title);
   title = title.replace(/ /g, "-");
+  console.log(title);
+  title = title.replace(/á/g, "a");
+  title = title.replace(/é/g, "e");
   console.log(title);
   title = encodeURIComponent(title).replace(/%/g, "");
   console.log(title);
