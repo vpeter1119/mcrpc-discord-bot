@@ -1,13 +1,32 @@
-const _ = require("lodash");
 
-exports.WikiLink = function(chn, inputTitle) {
-  var titleAsRequested = inputTitle;
-  var title = titleAsRequested.replace(/ /g, "_");
-  var url = "https://forgottenrealms.fandom.com/wiki/" + title;
-  var msgData =
-    "Here is a link to the Forgotten Realms Wiki article '**" +
-    titleAsRequested +
-    "**':\n" +
-    url;
-  chn.send(msgData);
+module.exports = {
+	name: "forgotten-realms",
+	aliases: ["fr","forgottenrealms"],
+	description: "Creates a link to the specified article on the Forgotten Realms Wiki.",
+	args: true,
+	usage: "`fr wiki <article_title>`",
+	execute(msg, args) {
+		//Code here
+		const action = args.shift();
+		console.log("FR command: "+action);
+		if (action === "wiki") {
+			WikiLink(msg.channel, args.join(' '));
+		}
+	}
+}
+
+WikiLink = function(chn, inputTitle) {
+	if (!inputTitle.length) {
+		msg.channel.send("https://forgottenrealms.fandom.com");
+		return;
+	}
+	var titleAsRequested = inputTitle;
+	var title = titleAsRequested.replace(/ /g, "_");
+	var url = "https://forgottenrealms.fandom.com/wiki/" + title;
+	var msgData =
+	"Here is a link to the Forgotten Realms Wiki article '**" +
+	titleAsRequested +
+	"**':\n" +
+	url;
+	chn.send(msgData);
 };
