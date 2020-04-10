@@ -15,9 +15,9 @@ module.exports = {
 	}
 }
 
-WikiLink = function(chn, inputTitle) {
+function WikiLink (chn, inputTitle) {
 	if (!inputTitle.length) {
-		msg.channel.send("https://forgottenrealms.fandom.com");
+		chn.send("https://forgottenrealms.fandom.com");
 		return;
 	}
 	var titleAsRequested = inputTitle;

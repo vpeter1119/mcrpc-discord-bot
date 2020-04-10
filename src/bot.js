@@ -14,10 +14,7 @@ require('dotenv').config();
 const token = process.env.TOKEN;
 
 const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-//const _fr = require("./commands/forgotten-realms.js");
-//const _help = require("./commands/help.js");
-//const _fcg = require("./commands/fantasy-content-generator.js");
-//const _wa = require("./commands/worldanvil.js");
+
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	console.log("Reading command: "+command.name);
@@ -73,43 +70,6 @@ client.on("message", msg => {
 		console.error(err);
 		msg.reply("there was an error trying to execute that command!");
 	}
-	
-	//COMMANDS
-	
-	
-	
-	//Older code
-	
-	/*var chn = msg.channel;
-	var operator = msg.content.slice(0, 1);
-	if (operator === "%") {
-	//var cmd = msg.content.slice(1, 9);
-	var input = msg.content.slice(1).split(" ", 3);
-	var cmdRoot = input[0];
-	var cmdSpec = input[1];
-	var cmdCont = msg.content.split("%" + input[0]+" "+input[1] + " ")[1];
-	console.log("Command: " + cmdRoot + "_" + cmdSpec + "_" + cmdCont);
-	switch (cmdRoot) {
-	  case "help":
-		msg.react("👍");
-		_help.Help(chn);
-		break;
-	  case "wa":
-		msg.react("👍");
-		_wa.Main(cmdSpec, chn, cmdCont);
-		break;
-	  case "fr":
-		msg.react("👍");
-		_fr.WikiLink(chn, cmdCont);
-		break;
-	  case "fcg":
-		msg.react("👍");
-		_fcg.Main(cmdSpec, chn, cmdCont);
-		break;
-	  default:
-		_help.UnknownCommand(chn);
-	}
-	}*/
 });
 
 client.login(token);

@@ -20,7 +20,7 @@ module.exports = {
 				GenerateRandomName(msg.channel, args);
 				break;
 			case "npc":
-				GenerateRandomNpc(chn, args);
+				GenerateRandomNpc(msg.channel, args);
 				break;
 			default:
 				return;
