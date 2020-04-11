@@ -6,10 +6,10 @@ const {sNames} = require ("../data/settlement_names.json"); //This is a list of 
 
 module.exports = {
 	name: "fantasy-content-generator",
-	aliases: ["fcg","generate"],
+	aliases: ["fcg","generate","gen"],
 	description: "Uses the functions of Fantasy Content Generator by Tom Gray.",
 	args: true,
-	usage: "fcg <name || npc>",
+	usage: "fcg <name [-r race][-g gender] || npc [-r race][-g gender][-s seed] || settlement [-t type][-n name]>",
 	execute(msg, args) {
 		//Code here
 		const set = args.shift();
@@ -51,14 +51,16 @@ function GenerateRandomName(chn, args) {
 }
 
 function GenerateRandomNpc(chn, args) {
-	//Acceptable parameters: -r (for race), -g (for gender), -s (for seed)
+	//Acceptable parameters: -r (for race), -g (for gender), -s (for seed), -wa (for including a link to create a WorldAnvil article)
 	var params = {};
+	var waAdd = false;
 	if (!args || args===[]) {
 		params = {};
 	} else {
 		if (args.indexOf("-r") > -1) params.race = _.camelCase(args[((args.indexOf("-r"))+1)]);
 		if (args.indexOf("-g") > -1) params.gender = args[((args.indexOf("-g"))+1)];
-		if (args.indexOf("-s") > -1) params.seed = args[((args.indexOf("-s"))+1)].replace(/ /g,'');
+		if (args.indexOf("-s") > -1) params.seed = args[((args.indexOf("-s"))+1)];
+		if (args.indexOf("-wa") > -1) waAdd = true;
 	}
 	var npcData = FCG.NPCs.generate(params);
 	var npc = npcData.formattedData;
@@ -68,11 +70,21 @@ function GenerateRandomNpc(chn, args) {
 			description: (""+npc.race+" "+npc.gender)
 		}
 	}
-	//chn.send("> *Seed: " + seed + "*");
 	chn.send(`> *Seed: ${npcData.seed}*`);
 	chn.send("Here's a random NPC, fresh from the oven:", msgData);
 	var quotes = "A few words from **"+npc.name+"**\n" + "> " + npc.traits.join(" ") + "\n" + "> " + npc.desires.join(" ");
 	chn.send(quotes);
+	if (waAdd) {
+		var waUrl = (`https://www.worldanvil.com/world/article/new?title=${npc.name.replace(/ /g, "+")}&type=person`);
+		var waData = {
+			embed: {
+				title: (`Create ${npc.name} on WorldAnvil!`),
+				url: waUrl,
+				description: ("Click on the above link to create the article.")
+			}
+		}
+		chn.send("",waData);
+	}
 }
 
 function GenerateRandomSettlement(chn, args) {
@@ -84,6 +96,7 @@ function GenerateRandomSettlement(chn, args) {
 		params = {};
 	} else {
 		if (args.indexOf("-t") > -1) params.type = _.snakeCase(args[((args.indexOf("-t"))+1)]);
+		if (args.indexOf("-s") > -1) params.seed = args[((args.indexOf("-s"))+1)];
 		if (args.indexOf("-n") > -1) {
 			name = args[((args.indexOf("-n"))+1)]
 		} else {
