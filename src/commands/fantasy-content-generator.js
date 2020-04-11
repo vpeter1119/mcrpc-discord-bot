@@ -2,8 +2,7 @@
 const _ = require("lodash");
 
 const FCG = require("fantasy-content-generator");
-
-const _help = require("./help.js");
+const {sNames} = require ("../data/settlement_names.json"); //This is a list of random fantasy town names from http://www.dungeoneering.net/d100-list-fantasy-town-names/
 
 module.exports = {
 	name: "fantasy-content-generator",
@@ -13,14 +12,21 @@ module.exports = {
 	usage: "fcg <name || npc>",
 	execute(msg, args) {
 		//Code here
-		const action = args.shift();
-		console.log("FCG command: "+action);
-		switch (action) {
+		const set = args.shift();
+		console.log("FCG command: "+set);
+		switch (set) {
 			case "name":
 				GenerateRandomName(msg.channel, args);
 				break;
 			case "npc":
 				GenerateRandomNpc(msg.channel, args);
+				break;
+			case "settlement":
+			case "sett":
+			case "town":
+			case "city":
+			case "s":
+				GenerateRandomSettlement(msg.channel, args);
 				break;
 			default:
 				return;
@@ -50,4 +56,39 @@ function GenerateRandomNpc(chn, args) {
 	chn.send("Here's a random NPC, fresh from the oven:", msgData);
 	var quotes = "A few words from **"+npc.name+"**\n" + "> " + npc.traits.join(" ") + "\n" + "> " + npc.desires.join(" ");
 	chn.send(quotes);
+}
+
+function GenerateRandomSettlement(chn, args) {
+	//Acceptable parameters: -t (for type), -n (for name), 
+	var params = {};
+	var name = false;
+	var n = Math.floor(Math.random() * 10 + 1);
+	if (!args || args===[]) {
+		params = {};
+	} else {
+		if (args.indexOf("-t") > -1) params.type = _.snakeCase(args[((args.indexOf("-t"))+1)]);
+		if (args.indexOf("-n") > -1) {
+			name = args[((args.indexOf("-n"))+1)]
+		} else {
+			name = sNames[n];
+		}
+	}
+	var data = FCG.Settlements.generate(params);
+	var seed = data.seed;
+	var s = {
+		name: name,
+		type: _.lowerCase(data.type),
+		pops: data.population,
+		poi: data.establishments.formattedData
+	}
+	console.log(s);	
+	var msgData = {
+		embed: {
+			title: s.name,
+			description: `A ${s.type} with a population of ${s.pops}.`,
+		}
+	};
+	chn.send("> *Seed: " + seed + "*");
+	chn.send("", msgData);
+	chn.send(`The most famous place in ${s.name} is the ${s.poi.type} called **${s.poi.name}**.\n> ${s.poi.description}\n> A little-known secret about this place is: ||${s.poi.secret}||`);
 }
