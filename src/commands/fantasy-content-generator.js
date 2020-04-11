@@ -60,11 +60,7 @@ function GenerateRandomNpc(chn, args) {
 		if (args.indexOf("-g") > -1) params.gender = args[((args.indexOf("-g"))+1)];
 		if (args.indexOf("-s") > -1) params.seed = args[((args.indexOf("-s"))+1)].replace(/ /g,'');
 	}
-	console.log("Generating NPC with the following parameters:");
-	console.log(params);
 	var npcData = FCG.NPCs.generate(params);
-	console.log("Name: " + npcData.formattedData.name);
-	console.log("Seed: "+npcData.seed);
 	var npc = npcData.formattedData;
 	var msgData = {
 		embed: {
@@ -101,8 +97,7 @@ function GenerateRandomSettlement(chn, args) {
 		type: _.lowerCase(data.type),
 		pops: data.population,
 		poi: data.establishments.formattedData
-	}
-	console.log(s);	
+	}	
 	var msgData = {
 		embed: {
 			title: s.name,
