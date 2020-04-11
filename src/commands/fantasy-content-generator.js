@@ -35,24 +35,45 @@ module.exports = {
 }
 
 function GenerateRandomName(chn, args) {
-	var n = FCG.Names.generate();
-	var n = n.formattedData;
+	//Acceptable parameters: -r (for race), -g (for gender)
+	var params = {};
+	if (!args || args===[]) {
+		params = {};
+	} else {
+		if (args.indexOf("-r") > -1) params.race = _.camelCase(args[((args.indexOf("-r"))+1)]);
+		if (args.indexOf("-g") > -1) params.gender = args[((args.indexOf("-g"))+1)];
+	}
+	var nData = FCG.Names.generate(params);
+	var n = nData.formattedData;
 	n.lastName = _.toUpper(n.lastName);
-	var msgData = n.firstName + " " + n.lastName + " (" + n.race + " " + n.gender + ")";;
+	var msgData = (`${n.firstName} ${n.lastName} (${n.race} ${n.gender})`);
 	chn.send(msgData);
 }
 
 function GenerateRandomNpc(chn, args) {
-	var npc = FCG.NPCs.generate();
-	var seed = npc.seed;
-	var npc = npc.formattedData;
+	//Acceptable parameters: -r (for race), -g (for gender), -s (for seed)
+	var params = {};
+	if (!args || args===[]) {
+		params = {};
+	} else {
+		if (args.indexOf("-r") > -1) params.race = _.camelCase(args[((args.indexOf("-r"))+1)]);
+		if (args.indexOf("-g") > -1) params.gender = args[((args.indexOf("-g"))+1)];
+		if (args.indexOf("-s") > -1) params.seed = args[((args.indexOf("-s"))+1)].replace(/ /g,'');
+	}
+	console.log("Generating NPC with the following parameters:");
+	console.log(params);
+	var npcData = FCG.NPCs.generate(params);
+	console.log("Name: " + npcData.formattedData.name);
+	console.log("Seed: "+npcData.seed);
+	var npc = npcData.formattedData;
 	var msgData = {
 		embed: {
 			title: npc.name,
 			description: (""+npc.race+" "+npc.gender)
 		}
 	}
-	chn.send("> *Seed: " + seed + "*");
+	//chn.send("> *Seed: " + seed + "*");
+	chn.send(`> *Seed: ${npcData.seed}*`);
 	chn.send("Here's a random NPC, fresh from the oven:", msgData);
 	var quotes = "A few words from **"+npc.name+"**\n" + "> " + npc.traits.join(" ") + "\n" + "> " + npc.desires.join(" ");
 	chn.send(quotes);
