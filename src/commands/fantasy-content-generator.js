@@ -91,6 +91,7 @@ function GenerateRandomSettlement(chn, args) {
 	//Acceptable parameters: -t (for type), -n (for name), 
 	var params = {};
 	var name = false;
+	var waAdd = false;
 	var n = Math.floor(Math.random() * 10 + 1);
 	if (!args || args===[]) {
 		params = {};
@@ -102,6 +103,7 @@ function GenerateRandomSettlement(chn, args) {
 		} else {
 			name = sNames[n];
 		}
+		if (args.indexOf("-wa") > -1) waAdd = true;
 	}
 	var data = FCG.Settlements.generate(params);
 	var seed = data.seed;
@@ -120,4 +122,20 @@ function GenerateRandomSettlement(chn, args) {
 	chn.send("> *Seed: " + seed + "*");
 	chn.send("", msgData);
 	chn.send(`The most famous place in ${s.name} is the ${s.poi.type} called **${s.poi.name}**.\n> ${s.poi.description}\n> A little-known secret about this place is: ||${s.poi.secret}||`);
+	if (waAdd) {
+		var waSUrl = (`https://www.worldanvil.com/world/article/new?title=${s.name.replace(/ /g, "+")}&type=settlement`);
+		var waPoiUrl = (`https://www.worldanvil.com/world/article/new?title=${s.poi.name.replace(/ /g, "+")}&type=landmark`);
+		var waData1 = {
+			title: (`Create ${s.name} on WorldAnvil!`),
+			url: waSUrl,
+			description: ("Click on the above link to create the article.")
+		}
+		var waData2 = {
+			title: (`Create ${s.poi.name} on WorldAnvil!`),
+			url: waPoiUrl,
+			description: ("Click on the above link to create the article.")
+		}
+		chn.send("",{embed:waData1});
+		chn.send("",{embed:waData2});
+	}
 }
