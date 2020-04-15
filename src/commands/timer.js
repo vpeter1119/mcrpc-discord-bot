@@ -6,10 +6,9 @@ module.exports = {
 	args: true,
 	usage: "timer [start|stop] [amount][s/m/h]",
 	execute(msg, args) {
-		//Code here
-		const set = args.shift();
-		console.log("FCG command: "+set);
-		switch (set) {
+		
+		const action = args.shift();
+		switch (action) {
 			case "start":
 				StartTimer(msg.channel, args);
 				break;
@@ -23,11 +22,11 @@ module.exports = {
 }
 
 function StartTimer(chn, args) {
-	//Starts timer
+	//Start timer based on args
 	chn.send("This will start a timer.");
 }
 
 function StopTimer(chn) {
-	//Stops timer
+	//Stop timer
 	chn.send("This will stop the timer.");
 }
