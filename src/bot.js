@@ -23,9 +23,9 @@ for (const file of commandFiles) {
 const cooldowns = new Discord.Collection();
 
 client.on("ready", () => {
-  client.user.setStatus("available");
-  client.user.setPresence(presenceData);
-  console.log("Logged in as " + client.user.tag + "!");
+  //client.user.setStatus("available");
+  client.user.setActivity(`${prefix}help`, {type: 'LISTENING'});
+  
 });
 
 client.on("message", msg => {
@@ -72,4 +72,8 @@ client.on("message", msg => {
 	}
 });
 
-client.login(token);
+client.login(token)
+.then(() => {
+	console.log("Logged in as " + client.user.tag + "!");
+	console.log(`Bot listening to prefix '${prefix}'`);
+});
