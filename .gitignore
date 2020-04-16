@@ -3,4 +3,4 @@
 npm-debug.log
 .env
 runServer.bat
-/.vs
+.vs/

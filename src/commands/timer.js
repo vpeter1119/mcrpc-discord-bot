@@ -29,21 +29,22 @@ module.exports = {
 
 function StartTimer(message, args) {
 	//Expected syntax %timer start [timeToAdd] [txt]
-	var timeToAdd = args.shift()*60;
+	var timeToAdd = args.shift()*60; // getting time in secs
 	var txt = "";
-	if (args) {
+	if (args.length > 0) {
 		txt = args.join(" ");
 	} else {
 		txt = "Timer";
-	}
-	if (timeToAdd > 3600) timeToAdd = 3600;
-	var timeLeft = moment.duration({
-		seconds: timeToAdd
-	});
-    timeLeft += 0; // this is strange
-    // very strange yes
-	var interval = 5000;
-	message.channel.send(`${txt}: ${moment(timeLeft).format('mm:ss')}`)
+    }
+
+    if (timeToAdd > 3600) {
+        timeToAdd = 3600;
+    }
+    var interval = 1; // in seconds
+    var timeLeft = timeToAdd
+    var timeLeftString = (Math.floor(timeLeft / 60)).toString().padStart(2, "0") + ":" + (timeLeft % 60).toString().padStart(2, "0");
+    
+    message.channel.send(`${txt}: ${timeLeftString}`)
 	.then(msg => {
 		sentMsg = msg;
 	})
@@ -51,14 +52,16 @@ function StartTimer(message, args) {
 		message.channel.send("Sorry, something went wrong. You can always try again, though.");
 	});
 	timer = setInterval(() => {	
-		timeLeft -= interval;
-		sentMsg.edit(`${txt}: ${moment(timeLeft).format('mm:ss')}`);
+        timeLeft -= interval;
+        timeLeftString = (Math.floor(timeLeft / 60)).toString().padStart(2, "0") + ":" + (timeLeft % 60).toString().padStart(2, "0");
+
+        sentMsg.edit(`${txt}: ${timeLeftString}`);
 		if (timeLeft <= 0) {
 			sentMsg.delete();
 			message.reply("your timer expired!");
 			clearInterval(timer);
 		} 
-	}, interval);
+	}, interval*1000);
 }
 
 function StopTimer(message) {
