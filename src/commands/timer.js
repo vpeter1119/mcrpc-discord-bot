@@ -40,7 +40,8 @@ function StartTimer(message, args) {
 	var timeLeft = moment.duration({
 		seconds: timeToAdd
 	});
-	timeLeft += 0;
+    timeLeft += 0; // this is strange
+    // very strange
 	var interval = 5000;
 	message.channel.send(`${txt}: ${moment(timeLeft).format('mm:ss')}`)
 	.then(msg => {
