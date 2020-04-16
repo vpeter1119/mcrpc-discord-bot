@@ -8,15 +8,17 @@ module.exports = {
 	aliases: ["countdown","cd"],
 	description: "Starts or stops a countdown timer.",
 	args: true,
-	usage: "timer [start|stop] [time in seconds]",
+	usage: "timer [start|set|stop|end] [time in minutes] [message to display]",
 	execute(msg, args) {
 		
 		const action = args.shift();
 		switch (action) {
 			case "start":
+			case "set":
 				StartTimer(msg, args);
 				break;
 			case "stop":
+			case "end":
 				StopTimer(msg);
 				break;
 			default:
@@ -26,11 +28,11 @@ module.exports = {
 }
 
 function StartTimer(message, args) {
-	//Start timer based on args
-	var timeToAdd = args[0]*60;
+	//Expected syntax %timer start [timeToAdd] [txt]
+	var timeToAdd = args.shift()*60;
 	var txt = "";
-	if (args.indexOf("-m") > -1) {
-		txt = args[((args.indexOf("-m"))+1)];
+	if (args) {
+		txt = args.join(" ");
 	} else {
 		txt = "Timer";
 	}
