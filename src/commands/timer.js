@@ -40,7 +40,7 @@ function StartTimer(message, args) {
     if (timeToAdd > 3600) {
         timeToAdd = 3600;
     }
-    var interval = 1; // in seconds
+    var interval = 5; // in seconds
     var timeLeft = timeToAdd
     var timeLeftString = (Math.floor(timeLeft / 60)).toString().padStart(2, "0") + ":" + (timeLeft % 60).toString().padStart(2, "0");
     
