@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const moment = require("moment");
 let sentMsg = new Discord.Message();
 var timer = null;
 
@@ -26,30 +27,35 @@ module.exports = {
 
 function StartTimer(message, args) {
 	//Start timer based on args
-	var timeToAdd = args[0];
+	var timeToAdd = args[0]*60;
 	var txt = "";
 	if (args.indexOf("-m") > -1) {
 		txt = args[((args.indexOf("-m"))+1)];
 	} else {
 		txt = "Timer";
 	}
-	if (timeToAdd > 3600) timeToAdd = 3600; 
-	var now = new Date().getTime();
-	var expireTime = now + (timeToAdd*1000);
-	var timeLeft = expireTime - now;
-	message.channel.send(`${txt}: ${timeLeft/1000} second(s) left`)
+	if (timeToAdd > 3600) timeToAdd = 3600;
+	var timeLeft = moment.duration({
+		seconds: timeToAdd
+	});
+	timeLeft += 0;
+	var interval = 5000;
+	message.channel.send(`${txt}: ${moment(timeLeft).format('mm:ss')}`)
 	.then(msg => {
 		sentMsg = msg;
+	})
+	.catch(error => {
+		message.channel.send("Sorry, something went wrong. You can always try again, though.");
 	});
 	timer = setInterval(() => {	
-		timeLeft -= 1000;
-		sentMsg.edit(`${txt}: ${timeLeft/1000} second(s) left`);
-		if (timeLeft == 0) {
+		timeLeft -= interval;
+		sentMsg.edit(`${txt}: ${moment(timeLeft).format('mm:ss')}`);
+		if (timeLeft <= 0) {
 			sentMsg.delete();
 			message.reply("your timer expired!");
 			clearInterval(timer);
 		} 
-	}, 1000);
+	}, interval);
 }
 
 function StopTimer(message) {
