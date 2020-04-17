@@ -22,6 +22,15 @@ for (const file of commandFiles) {
 }
 const cooldowns = new Discord.Collection();
 
+//Workaround for "fields.flat is not a function" issue
+Object.defineProperty(Array.prototype, 'flat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      }, []);
+    }
+});
+
 client.on("ready", () => {
   //client.user.setStatus("available");
   client.user.setActivity(`${prefix}help`, {type: 'LISTENING'});
