@@ -10,23 +10,24 @@ module.exports = {
 	description: "Uses the functions of Fantasy Content Generator by Tom Gray.",
 	args: true,
 	usage: "fcg <name [-r race][-g gender] || npc [-r race][-g gender][-s seed] || settlement [-t type][-n name]>",
+	cooldown: 1,
 	execute(msg, args) {
 		//Code here
 		const set = args.shift();
 		console.log("FCG command: "+set);
 		switch (set) {
 			case "name":
-				GenerateRandomName(msg.channel, args);
+				GenerateRandomName(msg, args);
 				break;
 			case "npc":
-				GenerateRandomNpc(msg.channel, args);
+				GenerateRandomNpc(msg, args);
 				break;
 			case "settlement":
 			case "sett":
 			case "town":
 			case "city":
 			case "s":
-				GenerateRandomSettlement(msg.channel, args);
+				GenerateRandomSettlement(msg, args);
 				break;
 			default:
 				return;
@@ -34,7 +35,7 @@ module.exports = {
 	}
 }
 
-function GenerateRandomName(chn, args) {
+function GenerateRandomName(msg, args) {
 	//Acceptable parameters: -r (for race), -g (for gender)
 	var params = {};
 	if (!args || args===[]) {
@@ -47,10 +48,10 @@ function GenerateRandomName(chn, args) {
 	var n = nData.formattedData;
 	n.lastName = _.toUpper(n.lastName);
 	var msgData = (`${n.firstName} ${n.lastName} (${n.race} ${n.gender})`);
-	chn.send(msgData);
+	msg.channel.send(msgData);
 }
 
-function GenerateRandomNpc(chn, args) {
+function GenerateRandomNpc(msg, args) {
 	//Acceptable parameters: -r (for race), -g (for gender), -s (for seed), -wa (for including a link to create a WorldAnvil article)
 	var params = {};
 	var waAdd = false;
@@ -67,27 +68,43 @@ function GenerateRandomNpc(chn, args) {
 	var msgData = {
 		embed: {
 			title: npc.name,
-			description: (""+npc.race+" "+npc.gender)
+			description: (""+npc.race+" "+npc.gender),
+			fields: [
+				{
+					name: "**Seed**",
+					value: `You can recreate this exact NPC with the following command:\n\`${msg} -s ${npcData.seed}\``,
+					inline: false
+				},
+				{
+					name: "**Traits**",
+					value: npc.traits.join("\n"),
+					inline: false
+				},
+				{
+					name: "**Desire**",
+					value: npc.desires.join("\n"),
+					inline: false
+				},
+				{
+					name: "**Relations**",
+					value: npc.relations.length > 0 ? `**${_.capitalize(npc.relations[0].relationTitle)}**: ${npc.relations[0].npc.formattedData.name} (${npc.relations[0].npc.formattedData.race} ${npc.relations[0].npc.formattedData.gender})` : "No relations.",
+				}
+			]
 		}
 	}
-	chn.send(`> *Seed: ${npcData.seed}*`);
-	chn.send("Here's a random NPC, fresh from the oven:", msgData);
-	var quotes = "A few words from **"+npc.name+"**\n" + "> " + npc.traits.join(" ") + "\n" + "> " + npc.desires.join(" ");
-	chn.send(quotes);
 	if (waAdd) {
 		var waUrl = (`https://www.worldanvil.com/world/article/new?title=${npc.name.replace(/ /g, "+")}&type=person`);
-		var waData = {
-			embed: {
-				title: (`Create ${npc.name} on WorldAnvil!`),
-				url: waUrl,
-				description: ("Click on the above link to create the article.")
-			}
-		}
-		chn.send("",waData);
+		msgData.embed.fields.push({
+			name: `Create ${npc.name} on WorldAnvil!`,
+			value: waUrl,
+			inline: false
+		});
 	}
+	msg.channel.send("",msgData);
+	
 }
 
-function GenerateRandomSettlement(chn, args) {
+function GenerateRandomSettlement(msg, args) {
 	//Acceptable parameters: -t (for type), -n (for name), 
 	var params = {};
 	var name = false;
@@ -112,30 +129,75 @@ function GenerateRandomSettlement(chn, args) {
 		type: _.lowerCase(data.type),
 		pops: data.population,
 		poi: data.establishments.formattedData
-	}	
-	var msgData = {
+	}
+	var npcsString = [];
+	s.poi.npcs.forEach(npc => {
+		npcsString.push(`**${npc.formattedData.name}**, ${npc.formattedData.vocation} (${npc.formattedData.race} ${npc.formattedData.gender})`);
+	});
+	var msgDataSettlement = {
 		embed: {
 			title: s.name,
-			description: `A ${s.type} with a population of ${s.pops}.`,
+			fields: [
+				{
+					name: "**Seed**",
+					value: `You can recreate this exact settlement with the following command:\n\`${msg} -s ${seed}\``,
+					inline: false
+				},
+				{
+					name: "**Type**",
+					value: s.type,
+					inline: false
+				},
+				{
+					name: "**Population**",
+					value: s.pops,
+					inline: false
+				}
+			]
 		}
 	};
-	chn.send("> *Seed: " + seed + "*");
-	chn.send("", msgData);
-	chn.send(`The most famous place in ${s.name} is the ${s.poi.type} called **${s.poi.name}**.\n> ${s.poi.description}\n> A little-known secret about this place is: ||${s.poi.secret}||`);
+	var msgDataEstablishment = {
+		embed: {
+			title: s.poi.name,
+			description: `A(n) ${_.lowerCase(s.poi.type)} in ${s.name}`,
+			fields: [
+				{
+					name: "**Type**",
+					value: s.poi.type,
+					inline: false
+				},
+				{
+					name: "**Description**",
+					value: s.poi.description,
+					inline: false
+				},
+				{
+					name: "**Secret**",
+					value: `||${s.poi.secret}||`,
+					inline: false
+				},
+				{
+					name: "**NPCs**",
+					value: npcsString,
+					inline: false
+				}
+			]
+		}
+	};
 	if (waAdd) {
 		var waSUrl = (`https://www.worldanvil.com/world/article/new?title=${s.name.replace(/ /g, "+")}&type=settlement`);
 		var waPoiUrl = (`https://www.worldanvil.com/world/article/new?title=${s.poi.name.replace(/ /g, "+")}&type=landmark`);
-		var waData1 = {
-			title: (`Create ${s.name} on WorldAnvil!`),
-			url: waSUrl,
-			description: ("Click on the above link to create the article.")
-		}
-		var waData2 = {
-			title: (`Create ${s.poi.name} on WorldAnvil!`),
-			url: waPoiUrl,
-			description: ("Click on the above link to create the article.")
-		}
-		chn.send("",{embed:waData1});
-		chn.send("",{embed:waData2});
+		msgDataSettlement.embed.fields.push({
+			name: `Create ${s.name} on WorldAnvil!`,
+			value: waSUrl,
+			inline: false
+		});
+		msgDataEstablishment.embed.fields.push({
+			name: `Create ${s.poi.name} on WorldAnvil!`,
+			value: waPoiUrl,
+			inline: false
+		});
 	}
+	msg.channel.send("",msgDataSettlement);
+	msg.channel.send("",msgDataEstablishment);
 }
