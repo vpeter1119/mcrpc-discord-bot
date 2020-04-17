@@ -4,17 +4,6 @@ const _ = require("lodash");
 const FCG = require("fantasy-content-generator");
 const {sNames} = require ("../data/settlement_names.json"); //This is a list of random fantasy town names from http://www.dungeoneering.net/d100-list-fantasy-town-names/
 
-//Workaround for "fields.flat is not a function" issue
-/*
-Object.defineProperty(Array.prototype, 'flat', {
-    value: function(depth = 1) {
-      return this.reduce(function (flat, toFlatten) {
-        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
-      }, []);
-    }
-});
-*/
-
 module.exports = {
 	name: "fantasy-content-generator",
 	aliases: ["fcg","generate","gen"],
@@ -140,30 +129,75 @@ function GenerateRandomSettlement(msg, args) {
 		type: _.lowerCase(data.type),
 		pops: data.population,
 		poi: data.establishments.formattedData
-	}	
-	var msgData = {
+	}
+	var npcsString = [];
+	s.poi.npcs.forEach(npc => {
+		npcsString.push(`**${npc.formattedData.name}**, ${npc.formattedData.vocation} (${npc.formattedData.race} ${npc.formattedData.gender})`);
+	});
+	var msgDataSettlement = {
 		embed: {
 			title: s.name,
-			description: `A ${s.type} with a population of ${s.pops}.`,
+			fields: [
+				{
+					name: "**Seed**",
+					value: `You can recreate this exact settlement with the following command:\n\`${msg} -s ${seed}\``,
+					inline: false
+				},
+				{
+					name: "**Type**",
+					value: s.type,
+					inline: false
+				},
+				{
+					name: "**Population**",
+					value: s.pops,
+					inline: false
+				}
+			]
 		}
 	};
-	msg.channel.send("> *Seed: " + seed + "*");
-	msg.channel.send("", msgData);
-	msg.channel.send(`The most famous place in ${s.name} is the ${s.poi.type} called **${s.poi.name}**.\n> ${s.poi.description}\n> A little-known secret about this place is: ||${s.poi.secret}||`);
+	var msgDataEstablishment = {
+		embed: {
+			title: s.poi.name,
+			description: `A(n) ${_.lowerCase(s.poi.type)} in ${s.name}`,
+			fields: [
+				{
+					name: "**Type**",
+					value: s.poi.type,
+					inline: false
+				},
+				{
+					name: "**Description**",
+					value: s.poi.description,
+					inline: false
+				},
+				{
+					name: "**Secret**",
+					value: `||${s.poi.secret}||`,
+					inline: false
+				},
+				{
+					name: "**NPCs**",
+					value: npcsString,
+					inline: false
+				}
+			]
+		}
+	};
 	if (waAdd) {
 		var waSUrl = (`https://www.worldanvil.com/world/article/new?title=${s.name.replace(/ /g, "+")}&type=settlement`);
 		var waPoiUrl = (`https://www.worldanvil.com/world/article/new?title=${s.poi.name.replace(/ /g, "+")}&type=landmark`);
-		var waData1 = {
-			title: (`Create ${s.name} on WorldAnvil!`),
-			url: waSUrl,
-			description: ("Click on the above link to create the article.")
-		}
-		var waData2 = {
-			title: (`Create ${s.poi.name} on WorldAnvil!`),
-			url: waPoiUrl,
-			description: ("Click on the above link to create the article.")
-		}
-		msg.channel.send("",{embed:waData1});
-		msg.channel.send("",{embed:waData2});
+		msgDataSettlement.embed.fields.push({
+			name: `Create ${s.name} on WorldAnvil!`,
+			value: waSUrl,
+			inline: false
+		});
+		msgDataEstablishment.embed.fields.push({
+			name: `Create ${s.poi.name} on WorldAnvil!`,
+			value: waPoiUrl,
+			inline: false
+		});
 	}
+	msg.channel.send("",msgDataSettlement);
+	msg.channel.send("",msgDataEstablishment);
 }
