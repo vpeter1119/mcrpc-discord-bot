@@ -24,8 +24,13 @@ module.exports = {
 		const action = args.shift();
 		switch (action) {
 			case "start":
-			case "set":
-				StartTimer(msg, args);
+            case "set":
+                if (timer === null) {
+                    StartTimer(msg, args);
+                } else {
+                    msg.channel.send(`There is a timer running already.`);
+                    return;
+                }
 				break;
 			case "stop":
             case "end":
