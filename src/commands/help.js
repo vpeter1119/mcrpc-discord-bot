@@ -1,6 +1,15 @@
 
 const {prefix, defaultCooldown} = require ('../config.json');
 
+//Workaround for "fields.flat is not a function" issue
+Object.defineProperty(Array.prototype, 'flat', {
+    value: function(depth = 1) {
+      return this.reduce(function (flat, toFlatten) {
+        return flat.concat((Array.isArray(toFlatten) && (depth>1)) ? toFlatten.flat(depth-1) : toFlatten);
+      }, []);
+    }
+});
+
 module.exports = {
 	name: 'help',
 	aliases: ['commands','?'],
@@ -8,14 +17,31 @@ module.exports = {
 	usage: '<command_name>',
 	execute(msg, args) {
 		const data = [];
+		const embed = {
+			title: "Available Commands",
+			descripton: `\nYou can send ${prefix}help [command_name] to get info on a specific command!`,
+			fields: []
+		};
 		const {commands} = msg.client;
 		
 		if (!args.length) {
-			data.push("Here's a list of all my commands:");
-			data.push(commands.map(command => command.name).join('\n'));
-			data.push(`\nYou can send \`${prefix}help <command_name>\` to get info on a specific command!`);
+			/*data.push(commands.map(command => {
+				return `\`${prefix}${command.name}\` (${command.aliases}) — ${command.description}`;
+			}).join('\n')); */
+			embed.fields.push(commands.map(command => {
+				return {
+					name: `**${command.name}**`,
+					value: command.description,
+					inline: false,
+				}
+			}));
+			embed.fields.push({
+				name: 'Other',
+				value: `\nYou can send ${prefix}help [command_name] to get info on a specific command!`,
+				inline: false,
+			});
 			
-			return msg.author.send(data, {split:true})
+			return msg.author.send('', {embed: embed}, {split:true})
 				.then(() => {
 					if (msg.channel.type === "dm") return;
 					msg.reply("I have sent you a DM with all my commands!");
