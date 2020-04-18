@@ -10,6 +10,9 @@ const {
 const fs = require("fs");
 const Discord = require("discord.js");
 
+//Require web app
+const web = require("./web/index.js");
+
 //Set up discord classes
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
