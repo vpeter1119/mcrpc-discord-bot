@@ -77,7 +77,7 @@ function StartTimer(message, args) {
     }
 
     // process text input. if there is none, then "Timer" is set
-    txt = args.length > 0 ? args[0] : "Timer";
+    txt = args.length > 0 ? args.join(" ") : "Timer";
 
     // set up timer
     var timeInSeconds = currentTimeObj.h * 3600 + currentTimeObj.m * 60 + currentTimeObj.s;
