@@ -1,17 +1,21 @@
 
+//Import config
 const {
+	token,
 	prefix,
-	presenceData,
-	defaultCooldown,
-	} = require("./config.json");
+	defaultCooldown
+} = require("./config/config.js");
+
+//Require modules
 const fs = require("fs");
 const Discord = require("discord.js");
+
+//Set up discord classes
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
-exports.bot = client;
+//exports.bot = client;
 
 require('dotenv').config();
-const token = process.env.TOKEN;
 
 const commandFiles = fs.readdirSync(`${__dirname}/commands`).filter(file => file.endsWith(".js"));
 

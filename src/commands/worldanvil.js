@@ -1,6 +1,6 @@
 
 const _ = require("lodash");
-const {world} = require("../config.json");
+const {world} = require("../config/config.js");
 
 module.exports = {
 	name: "worldanvil",

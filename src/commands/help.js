@@ -1,5 +1,5 @@
 
-const {prefix, defaultCooldown} = require ('../config.json');
+const {prefix, defaultCooldown} = require ('../config/config.js');
 
 module.exports = {
 	name: 'help',
