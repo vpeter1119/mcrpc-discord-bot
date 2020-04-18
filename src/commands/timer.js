@@ -20,7 +20,6 @@ module.exports = {
 	args: true,
 	usage: "timer [start|set|stop|end|add|plus|sub|subtract] [time in hh:mm:ss or mm:ss or mm format] [message to display]",
 	execute(msg, args) {
-        console.log(timer);
 		const action = args.shift();
 		switch (action) {
 			case "start":
