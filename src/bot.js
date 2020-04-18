@@ -14,6 +14,9 @@ require('dotenv').config();
 //Require web app
 const web = require("./web/index.js");
 
+//Require web app
+const web = require("./web/index.js");
+
 //Set up discord classes
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
