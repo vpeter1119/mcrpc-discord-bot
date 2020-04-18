@@ -41,6 +41,7 @@ module.exports = {
                 }
                 break;
             case "add":
+            case "+":
             case "plus":
                 if (timer === null) {
                     msg.channel.send(`There is no running timer.`);
@@ -50,6 +51,7 @@ module.exports = {
                 }
                 break;
             case "sub":
+            case "-":
             case "subtract":
                 if (timer === null) {
                     msg.channel.send(`There is no running timer.`);
