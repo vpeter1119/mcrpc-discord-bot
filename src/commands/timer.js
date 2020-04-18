@@ -20,7 +20,6 @@ module.exports = {
 	args: true,
 	usage: "timer [start|set|stop|end|add|plus|sub|subtract] [time in hh:mm:ss or mm:ss or mm format] [message to display]",
 	execute(msg, args) {
-        console.log(timer);
 		const action = args.shift();
 		switch (action) {
 			case "start":
@@ -42,6 +41,7 @@ module.exports = {
                 }
                 break;
             case "add":
+            case "+":
             case "plus":
                 if (timer === null) {
                     msg.channel.send(`There is no running timer.`);
@@ -51,6 +51,7 @@ module.exports = {
                 }
                 break;
             case "sub":
+            case "-":
             case "subtract":
                 if (timer === null) {
                     msg.channel.send(`There is no running timer.`);
@@ -77,7 +78,7 @@ function StartTimer(message, args) {
     }
 
     // process text input. if there is none, then "Timer" is set
-    txt = args.length > 0 ? args[0] : "Timer";
+    txt = args.length > 0 ? args.join(" ") : "Timer";
 
     // set up timer
     var timeInSeconds = currentTimeObj.h * 3600 + currentTimeObj.m * 60 + currentTimeObj.s;
