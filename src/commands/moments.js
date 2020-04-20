@@ -2,7 +2,7 @@ const webModules = require("../web/modules/modules.js");
 
 module.exports = {
     name: "moments",
-    aliases: ["mom"],
+    aliases: ["moment","mom"],
     description: "Used store and bring up memorable RPG moments.",
     args: true,
     usage: "moments [add <From> <Text>|random]",
@@ -47,7 +47,7 @@ function BringUpRandomMoment(msg) {
             moments = result.object;
             var i = Math.floor(Math.random() * moments.length);
             var moment = moments[i];
-            msg.channel.send(`${moment.from} once said: "${moment.text}"`);
+            msg.channel.send("", { embed: { title: `${moment.from}:${moment.text}` }});
         } else {
             console.log("ERROR!");
             console.log(result.error);
