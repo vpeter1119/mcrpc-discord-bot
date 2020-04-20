@@ -8,17 +8,12 @@ const port = process.env.PORT || 3000;
 
 // Set up database connection
 const mongoose = require("mongoose");
-const mongoPw = process.env.MONGODB_PW;
-const mongoUser = process.env.MONGODB_USER;
-const mongoUrl = process.env.MONGODB_URL;
-mongoose.connect(
-    "mongodb+srv://" +
-    mongoUser +
-    ":" +
-    mongoPw +
-    mongoUrl,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    err => {
+const mongoUri = process.env.MONGODB_URI;
+const mongoOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+};
+mongoose.connect(mongoUri,mongoOptions,err => {
         if (!err) {
             console.log("Connected to database.");
         } else {
