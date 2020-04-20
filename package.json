@@ -9,9 +9,11 @@
   "dependencies": {
     "discord.js": "^12.1.1",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "fantasy-content-generator": "^4.6.7",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0"
+    "moment": "^2.24.0",
+    "mongoose": "^5.9.9"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
