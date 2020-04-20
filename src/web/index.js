@@ -26,10 +26,6 @@ mongoose.connect(mongoUri,mongoOptions,err => {
 // Import local modules
 const modules = require("./modules/modules.js");
 
-//////// TESTING AREA ////////
-modules.momentsModule.GetAll();
-//////////////////////////////
-
 app.use(
     bodyParser.urlencoded({
         extended: true
