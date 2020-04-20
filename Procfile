@@ -1,2 +1,2 @@
-worker: npm bot
-web: npm web
+worker: npm run bot
+web: npm run web
