@@ -4,7 +4,8 @@
   "description": "A Discord bot with various useful functions for MC Roleplaying Club.",
   "main": "src/bot.js",
   "scripts": {
-    "start": "node src/bot.js"
+    "bot": "node src/bot.js",
+    "web": "node src/web/index.js"
   },
   "dependencies": {
     "discord.js": "^12.1.1",
