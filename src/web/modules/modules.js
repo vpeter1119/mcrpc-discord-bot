@@ -4,8 +4,8 @@
 const moments = require("./moments/moments_module.js");
 
 const modules = {
-    //Add every module here
-    moments
+  //Add every module here
+  moments
 };
 
 module.exports = modules;
