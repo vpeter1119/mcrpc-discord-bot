@@ -23,6 +23,8 @@ mongoose.connect(mongoUri,mongoOptions,err => {
     }
 );
 
+// Import local modules
+const modules = require("./modules/modules.js");
 
 app.use(
     bodyParser.urlencoded({
