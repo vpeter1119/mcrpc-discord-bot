@@ -18,20 +18,21 @@ client.commands = new Discord.Collection();
 
 // Set up variables on first run
 const cooldowns = new Discord.Collection(); // set of cooldowns for each command
-const debug = !production; // global debug
+global.debug = !production; // global debug
 
 const commandFiles = fs
   .readdirSync(`${__dirname}/commands`)
   .filter(file => file.endsWith(".js")); // reading all .js files from commands folder
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
-  if (debug) console.log("Reading command: " + command.name);
+  if (global.debug) console.log("Reading command: " + command.name);
   client.commands.set(command.name, command);
 }
 
 // When the bot loads this is the first it does:
 client.login(token).then(() => {
-  if (debug) {
+  global.locals = {}; // for local data storage
+  if (global.debug) {
     console.log("Logged in as " + client.user.tag + "!");
     console.log(`Bot listening to prefix '${prefix}'`);
   }
@@ -54,7 +55,7 @@ client.on("message", msg => {
     client.commands.find(
       cmd => cmd.aliases && cmd.aliases.includes(commandName)
     );
-  if (debug)
+  if (global.debug)
     console.log(
       "Command received: " + commandName + " with arguments: " + args
     );
@@ -98,9 +99,9 @@ client.on("message", msg => {
 
   // try-catch to make sure we can notify the user if something goes wrong
   try {
-    command.execute(msg, args, debug);
+    command.execute(msg, args);
   } catch (err) {
-    if (debug) console.error(err);
+    if (global.debug) console.error(err);
     msg.reply("there was an error trying to execute that command!");
   }
 });
@@ -117,3 +118,58 @@ Object.defineProperty(Array.prototype, "flat", {
     }, []);
   }
 });
+
+/* WEB WEB WEB */
+// Require npm packages
+const express = require("express");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+const debug = process.env.PRODUCTION === "FALSE";
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Set up database connection
+const mongoose = require("mongoose");
+const mongoUri = process.env.MONGODB_URI;
+const mongoOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+};
+mongoose.connect(mongoUri, mongoOptions, err => {
+  if (!err) {
+    if (debug) console.log("Connected to database.");
+  } else {
+    console.log(err);
+    console.log("Did not connect to database.");
+  }
+});
+
+// TODO: add comment to this app.use part. Why are there three app.use lines? What is bodyParser?
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+);
+app.use(bodyParser.json());
+
+// TODO: add comment, what is next? - the rest seems self-explanatory (although the Authorization part might need clarification)
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+  next();
+});
+
+// TODO: is this command needed? How about adding the if(debug) here?
+app.get("/", (req, res) => {
+  res.send("If you see this, the server is running. Cheers!");
+});
+
+app.listen(port, () => {
+  if (debug) console.log(`Server listening on port ${port}!`);
+});
+
+exports.web = app;
