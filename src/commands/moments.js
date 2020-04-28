@@ -1,4 +1,5 @@
 const webModules = require("../web/modules/modules.js");
+const debug = global.debug;
 
 module.exports = {
   name: "moments",
@@ -10,21 +11,22 @@ module.exports = {
     const action = args.shift();
     switch (action) {
       case "add":
-        AddMoment(msg, args, debug);
+        AddMoment(msg, args);
         break;
       case "random":
-        BringUpRandomMoment(msg, debug);
-        break;
+        MomentRandom(msg);
+        break;       
       case "clearfrom":
-        ClearMomentsFrom(msg, args, debug);
+        ClearMomentsFrom(msg, args);
         break;
       default:
+        MomentAdvanced(msg, args);
         return;
     }
   }
 };
 
-function AddMoment(msg, data, debug) {
+function AddMoment(msg, data) {
   var from = data.shift();
   var text = data.join(" ");
   // Create a new entry in database and handle the result with a callback function
@@ -41,7 +43,7 @@ function AddMoment(msg, data, debug) {
   });
 }
 
-function BringUpRandomMoment(msg, debug) {
+function MomentRandom(msg) {
   // Get all moments from database and handle the result with a callback function
   webModules.moments.GetAll(result => {
     if (result && result.ok) {
@@ -64,7 +66,24 @@ function BringUpRandomMoment(msg, debug) {
   });
 }
 
-function ClearMomentsFrom(msg, args, debug) {
+function MomentAdvanced(msg, args) {
+  var from = args.shift();
+  // First we check the 'from' key
+  webModules.moments.Find({from: from}, (err,result) => {
+    if (result && result.ok && result.object != []) {
+      moments = result.object;
+      var i = Math.floor(Math.random() * moments.length);
+      var moment = moments[i];
+      msg.channel.send(`A memorable moment from ${from}`, {
+        embed: { title: `${moment.from}:${moment.text}` }
+      });
+      return;
+    }
+  });
+  // Then we search in the text
+}
+
+function ClearMomentsFrom(msg, args) {
   var from = args.shift();
   //Delete moments based on their "from" value
   webModules.moments.Clear({ from: from }, result => {
