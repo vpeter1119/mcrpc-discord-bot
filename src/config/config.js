@@ -8,6 +8,7 @@ let config = require("./config.json");
 config.token = process.env.TOKEN;
 config.prefix = process.env.PREFIX || config.prefix; //this should default to the character in config.json
 config.production = process.env.PRODUCTION == "FALSE" ? false : true;
+config.apiUrl = process.env.API_URL || "mcrpc-server.petervertesi.com/api/";
 
 // This function returns the content of the config object, to be exported
 function ReturnConfig() {
