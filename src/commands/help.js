@@ -16,9 +16,6 @@ module.exports = {
 		const {commands} = msg.client;
 		
 		if (!args.length) {
-			/*data.push(commands.map(command => {
-				return `\`${prefix}${command.name}\` (${command.aliases}) — ${command.description}`;
-			}).join('\n')); */
 			embed.fields.push(commands.map(command => {
 				return {
 					name: `**${command.name}**`,
@@ -54,7 +51,7 @@ module.exports = {
 		
 		if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
 		if (command.description) data.push(`**Description:** ${command.description}`);
-		if (command.usage) data.push(`**Usage:** ${prefix}${command.usage}`);
+		if (command.usage) data.push(`**Usage:** \`${prefix}${command.usage}\``);
 		
 		data.push(`**Cooldown:** ${command.cooldown || defaultCooldown} second(s)`);
 		

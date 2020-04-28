@@ -65,7 +65,7 @@ client.on("message", msg => {
   if (command.args && args.length == 0) {
     let reply = `You didn't provide any arguments, ${msg.author}!`;
     if (command.usage) {
-      reply += `\n Correct usage: ${prefix}${command.usage}`;
+      reply += `\n Correct usage: \`${prefix}${command.usage}\``;
     }
     return msg.channel.send(reply);
   }
