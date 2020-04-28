@@ -12,7 +12,7 @@ module.exports = {
     aliases: ["moment", "mom"],
     description: "Used store and bring up memorable RPG moments.",
     args: true,
-    usage: "moments [add <From> <Text>|random]",
+    usage: "moments [add <From> <Text> | random| name (from)]",
     execute(msg, args) {
         const action = args.shift();
         switch (action) {
