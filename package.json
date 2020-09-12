@@ -15,7 +15,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.9.9",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "nodemon": "^1.18.4"
